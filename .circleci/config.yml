@@ -4,13 +4,45 @@ jobs:
   build:
     docker:
       - image: cimg/node:18.0
+
     steps:
       - checkout
-      - run: npm install
-      - run: npm test
+
+      - run:
+          name: Instalar dependencias
+          command: npm install
+
+  test:
+    docker:
+      - image: cimg/node:18.0
+
+    steps:
+      - checkout
+
+      - run:
+          name: Ejecutar pruebas
+          command: npm test
+
+  deploy:
+    docker:
+      - image: cimg/node:18.0
+
+    steps:
+      - run:
+          name: Simulación de deploy
+          command: echo "Deploy realizado exitosamente"
 
 workflows:
   version: 2
-  build_and_test:
+
+  build_test_deploy:
     jobs:
       - build
+
+      - test:
+          requires:
+            - build
+
+      - deploy:
+          requires:
+            - test
